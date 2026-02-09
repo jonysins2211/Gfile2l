@@ -225,18 +225,22 @@ async def back_to_start(client, callback_query):
 
 
 # ============ FLASK KEEP ALIVE ============
-def run():
+def start_flask():
     app = Flask(__name__)
 
-    @app.route('/')
+    @app.route("/")
     def home():
-        return 'Bot is alive!'
+        return "Bot is alive!"
 
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
 
-Thread(target=run).start()
+async def main():
+    Thread(target=start_flask, daemon=True).start()
+    await bot.start()
+    logger.info("🚀 GoFile Uploader Bot started successfully!")
+    await asyncio.Event().wait()
 
-# ============ START BOT ============
-logger.info("🚀 GoFile Uploader Bot started successfully!")
-bot.run()
+
+if __name__ == "__main__":
+    asyncio.run(main())
